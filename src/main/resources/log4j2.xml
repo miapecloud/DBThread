@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- status用于设置log4j2自身内部的信息输出，可以不设置，当设置成trace时，你会看到log4j2内部各种详细输出。 -->
+<configuration status="debug" monitorInterval="3600">
+	<properties>
+		<property name="LOG_HOME">/Users/libing/Documents/logs</property>
+		<property name="FILE_NAME">TaskFrame</property>
+	</properties>
+	<appenders>
+		<!--这个输出控制台的配置 -->
+		<Console name="CONSOLE" target="SYSTEM_OUT">
+			<PatternLayout
+				pattern="[LOG %p %d{y-MM-dd HH:mm:ss}] %m %ex [%t] %location%n" />
+			<!-- 设置级别 -->
+			<ThresholdFilter level="debug" onMatch="ACCEPT"
+				onMismatch="DENY" />
+		</Console>
+		<RollingRandomAccessFile name="FILE"
+			fileName="${LOG_HOME}/${FILE_NAME}.log" filePattern="${LOG_HOME}/${FILE_NAME}-%d{yyyy-MM-dd-HH}-%i.log"
+			immediateFlush="false" append="false">
+			<Filters>
+				<ThresholdFilter level="fatal" onMatch="DENY"
+					onMismatch="NEUTRAL" />
+				<ThresholdFilter level="debug" onMatch="ACCEPT"
+					onMismatch="DENY" />
+			</Filters>
+			<PatternLayout
+				pattern="[LOG %p %d{y-MM-dd HH:mm:ss}] %m %ex [%t] %location%n" />
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1" />
+				<SizeBasedTriggeringPolicy size="50 MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="100" />
+		</RollingRandomAccessFile>
+		<Async name="ASYNC" includeLocation="true">
+			<AppenderRef ref="FILE" />
+			<!-- <AppenderRef ref="CONSOLE" /> -->
+		</Async>
+	</appenders>
+	<loggers>
+		<Root level="debug">
+			<AppenderRef ref="ASYNC" />
+			<AppenderRef ref="CONSOLE" />
+		</Root>
+	</loggers>
+</configuration>
